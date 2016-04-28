@@ -1,0 +1,20 @@
+﻿@inherits Essential.Templating.Razor.Template<Templates.Models.Table>
+@foreach (var usingDirective in Model.UsingDirectives)
+{
+@:using @usingDirective;
+}
+
+namespace @Model.Namespace
+{
+    /// <summary>
+    /// Model for the "@Model.TableName" database table
+    /// </summary>
+    public class @Model.Name
+    {
+        @for (var i = 0;  i < Model.Columns.Count; i++)
+        {
+            var property = Model.Columns[i];
+            @:public @property.DataType @property.Name { get; set; }@if (i < Model.Columns.Count - 1) { <br /> }
+        }
+    }
+}

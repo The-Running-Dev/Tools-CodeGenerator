@@ -1,0 +1,21 @@
+﻿@inherits Essential.Templating.Razor.Template<Templates.Models.Repository>
+@foreach (var usingDirective in Model.UsingDirectives)
+{
+@:using @usingDirective;
+}
+
+namespace @Model.Namespace
+{
+    /// <summary>
+    /// Repository for the "@Model.TableName" database table
+    /// </summary>
+    public class @Model.Name : @Model.BaseRepository<@Model.ModelName>, @Model.ImplementsInterface
+    {
+        public @(Model.Name)(@(Model.ConnectionInterface) connection) : base(connection)
+        {
+            _connection = connection;
+        }
+
+        private readonly ICrsConnection _connection;
+    }
+}

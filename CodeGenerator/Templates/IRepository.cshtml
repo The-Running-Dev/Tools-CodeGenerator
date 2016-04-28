@@ -1,0 +1,16 @@
+﻿@inherits Essential.Templating.Razor.Template<Templates.Models.Repository>
+@foreach (var usingDirective in Model.UsingDirectives)
+{
+@:using @usingDirective;
+}
+
+namespace @Model.Namespace
+{
+    /// <summary>
+    /// Interface for the "@Model.TableName" database table
+    /// </summary>
+    public interface @Model.Name : @Model.ImplementsInterface<@Model.ModelName>
+    {
+
+    }
+}
