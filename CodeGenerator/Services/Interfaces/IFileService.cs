@@ -6,8 +6,8 @@ namespace CodeGenerator.Services.Interfaces
 {
     public interface IFileService
     {
-        void Write(Template templates);
+        List<string> Write(List<Template> templates);
 
-        void Write(List<Template> templates);
+        string Write(Template templates);
     }
 }

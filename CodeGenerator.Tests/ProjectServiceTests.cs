@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
+using System.Collections.Generic;
+
 using NUnit.Framework;
 
 using CodeGenerator.Models;
@@ -19,11 +20,12 @@ namespace CodeGenerator.Tests
         public void Should_Build_Include_Path()
         {
             var fileName = "SomeClass.cs";
+            var expected = $"{_sampleProjectFilePath.DirectoryName()}\\{fileName}";
 
-            var includePath = _service.BuildIncludePath(_sampleProjectFilePath, fileName);
+            var actual = _service.BuildIncludePath(_sampleProjectFilePath, fileName);
 
-            Assert.IsNotEmpty(includePath);
-            Assert.AreEqual($"{_sampleProjectFilePath.DirectoryName()}\\{fileName}", includePath);
+            Assert.IsNotEmpty(actual);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]

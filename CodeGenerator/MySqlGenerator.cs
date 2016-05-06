@@ -1,4 +1,6 @@
-﻿using CodeGenerator.Models;
+﻿using System.Collections.Generic;
+
+using CodeGenerator.Models;
 using CodeGenerator.Providers;
 using CodeGenerator.Extensions;
 using CodeGenerator.Services.Interfaces;
@@ -14,10 +16,12 @@ namespace CodeGenerator
             _fileService = fileService;
         }
 
-        public void GenerateModels(Template template)
+        public List<string> GenerateModels(Template template)
         {
+            var generatedFiles = new List<string>();
+
             // Get all the tables
-            var tables = _provider.GetTables();
+            var tables = _provider.GetTables(template.Entities);
 
             foreach (var table in tables)
             {
@@ -25,10 +29,11 @@ namespace CodeGenerator
                 var entity = new Table()
                 {
                     Namespace = template.Namespace,
-                    Name = table.TableName.ConvertTableName(),
+                    Name = table.TableName.PluralToSingular(),
                     TableName = table.TableName,
                     Columns = table.Columns
                 };
+
                 // Add the "using" directives from the template
                 entity.UsingDirectives.AddRange(template.UsingDirectives);
 
@@ -40,33 +45,26 @@ namespace CodeGenerator
                 // Write the template to disk if the path is not empty
                 if (template.Path.IsNotEmpty())
                 {
-                    _fileService.Write(template);
+                    var path = _fileService.Write(template);
+
+                    if (path.IsNotEmpty()) generatedFiles.Add(path);
                 }
             }
+
+            return generatedFiles;
         }
 
         public void GenerateRepositoryInterfaces(Template template)
         {
             // Get all the tables
-            var tables = _provider.GetTables();
+            var tables = _provider.GetTables(template.Entities);
 
             foreach (var table in tables)
             {
-                var tableName = table.TableName.ConvertTableName();
-
                 // Create an repository entity for each table
-                var entity = new Repository()
-                {
-                    Namespace = template.Namespace,
-                    Name = $"I{tableName}Repository",
-                    TableName = table.TableName,
-                    ModelName = tableName,
-                    ImplementsInterface = "IRepository"
-                };
+                var entity = template.ToRepository(table);
 
-                // Add the "using" directives from the template
-                entity.UsingDirectives.AddRange(template.UsingDirectives);
-
+                // Set the file extensions for the template
                 template.FileNameWithoutExtension = entity.Name;
 
                 // Generate the contents based on the entity using the PathToTemplate
@@ -80,26 +78,14 @@ namespace CodeGenerator
         public void GenerateRepositories(Template template)
         {
             // Get all the tables
-            var tables = _provider.GetTables();
+            var tables = _provider.GetTables(template.Entities);
 
             foreach (var table in tables)
             {
-                var tableName = table.TableName.ConvertTableName();
+                // Create an repository entity for each table
+                var entity = template.ToRepository(table);
 
-                // Create an entity for each table
-                var entity = new Repository()
-                {
-                    Namespace = template.Namespace,
-                    Name = $"{tableName}Repository",
-                    TableName = table.TableName,
-                    ModelName = tableName,
-                    BaseRepository = "DapperRepository",
-                    ImplementsInterface = $"I{table.Name}Repository",
-                    ConnectionInterface = "ICrsConnection"
-                };
-                // Add the "using" directives from the template
-                entity.UsingDirectives.AddRange(template.UsingDirectives);
-
+                // Set the file extensions for the template
                 template.FileNameWithoutExtension = entity.Name;
 
                 // Generate the contents based on the entity using the PathToTemplate

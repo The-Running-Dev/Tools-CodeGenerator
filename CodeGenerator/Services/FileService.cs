@@ -14,15 +14,21 @@ namespace CodeGenerator.Services
     /// </summary>
     public class FileService: IFileService
     {
-        public void Write(List<Template> templates)
+        public List<string> Write(List<Template> templates)
         {
+            var writtenFiles = new List<string>();
+
             foreach (var template in templates)
             {
-                Write(template);
+                var path = Write(template);
+
+                if (path.IsNotEmpty()) writtenFiles.Add(path);
             }
+
+            return writtenFiles;
         }
 
-        public void Write(Template template)
+        public string Write(Template template)
         {
             var path = Path.Combine(template.Path, template.FileName);
 
@@ -35,7 +41,7 @@ namespace CodeGenerator.Services
                 {
                     $"File {path} Exists...Skipping".ToConsole();
 
-                    return;
+                    return string.Empty;
                 }
 
                 path.Delete();
@@ -45,6 +51,8 @@ namespace CodeGenerator.Services
             {
                 $"File {path} Failed to Save".ToConsole();
             }
+
+            return path;
         }
     }
 }

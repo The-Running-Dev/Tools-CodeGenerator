@@ -1,15 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Reflection;
+
+using NUnit.Framework;
 
 using CodeGenerator.Models;
-using CodeGenerator.Extensions;
 
 namespace CodeGenerator.Tests.Data
 {
     public static class SampleData
     {
-        public static string AssemlbyDirectoryPath => Assembly.GetExecutingAssembly().Location.DirectoryPath();
+        public static string AssemlbyDirectoryPath => TestContext.CurrentContext.TestDirectory;
 
         public static string GeneratedDirectoryPath => Path.Combine(AssemlbyDirectoryPath, "Generated");
 

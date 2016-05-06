@@ -22,12 +22,15 @@ namespace CodeGenerator.Models
 
         public List<string> UsingDirectives { get; set; }
 
+        public List<string> Entities { get; set; }
+
         public string Contents { get; set; }
 
         public Template()
         {
             FileNameFormat = CsFileNameFormat;
             UsingDirectives = new List<string>();
+            Entities = new List<string>();
         }
 
         private const string CsFileNameFormat = "{0}.cs";

@@ -16,7 +16,7 @@ namespace CodeGenerator.Tests
     public class FileServiceTests
     {
         [Test]
-        public void Should_Write_File()
+        public void Should_Write_Single_File()
         {
             var randomText = SampleData.RandomText();
             var template = SampleData.CreateTemplate("SomeClass", randomText);
@@ -63,7 +63,7 @@ namespace CodeGenerator.Tests
         }
 
         [Test]
-        public void Should_Write_Files()
+        public void Should_Write_Multiple_Files()
         {
             string outputFile;
 

@@ -49,9 +49,13 @@
   <ItemGroup>
     <Compile Include="Data\SampleData.cs" />
     <Compile Include="CodeGeneratorTests.cs" />
+    <Compile Include="Formatters\RepositoryFormatProviderTests.cs" />
+    <Compile Include="Formatters\RepositoryFormatterTests.cs" />
+    <Compile Include="ListExtensionsTests.cs" />
     <Compile Include="MySqlGeneratorTests.cs" />
     <Compile Include="FileServiceTests.cs" />
     <Compile Include="ProjectServiceTests.cs" />
+    <Compile Include="StringExtensionsTests.cs" />
     <Compile Include="TemplateServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -77,6 +81,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

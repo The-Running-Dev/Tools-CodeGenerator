@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using CodeGenerator.Formatters;
+
 namespace CodeGenerator.Models
 {
     public class Repository: Entity
@@ -18,9 +20,12 @@ namespace CodeGenerator.Models
 
         public List<string> UsingDirectives { get; set; }
 
+        public RepositoryFormatter  Formatter { get; set; }
+
         public Repository()
         {
             UsingDirectives = new List<string>();
+            Formatter = new RepositoryFormatter();
         }
     }
 }

@@ -33,14 +33,19 @@ namespace CodeGenerator.Extensions
             File.WriteAllText(path, contents);
         }
 
+        public static string DirectoryName(this string path)
+        {
+            return Path.GetFileName(Path.GetDirectoryName(path));
+        }
+
         public static string DirectoryPath(this string path)
         {
             return Path.GetDirectoryName(path);
         }
 
-        public static string DirectoryName(this string path)
+        public static string FileName(this string path)
         {
-            return Path.GetFileName(Path.GetDirectoryName(path));
+            return Path.GetFileName(path);
         }
     }
 }

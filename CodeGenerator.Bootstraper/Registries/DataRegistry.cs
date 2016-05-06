@@ -3,6 +3,7 @@ using StructureMap.Graph;
 using StructureMap.Graph.Scanning;
 
 using CodeGenerator.Providers;
+using CodeGenerator.SqlDialects;
 
 namespace CodeGenerator.Bootstraper.Registries
 {
@@ -20,6 +21,7 @@ namespace CodeGenerator.Bootstraper.Registries
             });
 
             For<IDatabaseProvider>().Use<MySqlProvider>();
+            For<ISqlDialect>().Use<MySqlDialect>();
 
             //For<ICrsConnection>().Add<CrsConnection>()
             //    .Ctor<IConfiguration>().Is<MyCodeConfiguration>()
@@ -28,19 +30,6 @@ namespace CodeGenerator.Bootstraper.Registries
             //For(typeof(IConfiguration)).Singleton().Use(typeof(MyCodeConfiguration));
 
             //For<ICrsConnection>().Add<CrsConnection>().Ctor<String>().Is("CRS_Local");
-
-            //Scan(scan =>
-            //{
-            //    scan.AssemblyContainingType<IDataService<IModel>>();
-            //    scan.AssemblyContainingType<IRepository<Model>>();
-            //    scan.With(new DataAssemblyScanner());
-            //});
-
-            //Scan(scan =>
-            //{
-            //    scan.AssemblyContainingType<IDapperSettings>();
-            //    scan.WithDefaultConventions();
-            //});
         }
     }
 

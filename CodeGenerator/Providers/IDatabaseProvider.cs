@@ -6,7 +6,7 @@ namespace CodeGenerator.Providers
 {
     public interface IDatabaseProvider
     {
-        List<Table> GetTables();
+        List<Table> GetTables(List<string> tableNames = null);
 
         List<Columns> GetTableColumns(string tableName);
     }

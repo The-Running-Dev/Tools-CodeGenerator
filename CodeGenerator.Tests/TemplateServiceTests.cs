@@ -18,7 +18,7 @@ namespace CodeGenerator.Tests
             var model = new Table()
             {
                 TableName = "Customers",
-                Name = "Customers".ConvertTableName(),
+                Name = "Customers".PluralToSingular(),
                 Namespace = "Contec.Data.Models"
             };
             model.UsingDirectives.Add("System");
@@ -38,7 +38,7 @@ namespace CodeGenerator.Tests
             var model = new Table()
             {
                 TableName = "Customers",
-                Name = "Customers".ConvertTableName(),
+                Name = "Customers".PluralToSingular(),
                 Namespace = "Contec.Data.Models"
             };
             model.Columns.Add(new Columns() { Name = "ID".ToProperCaseWord(), DataType = "string" });
@@ -65,7 +65,7 @@ namespace CodeGenerator.Tests
             };
             model.UsingDirectives.Add("Contec.Data.Models");
 
-            var modelAsString = _service.Generate(model, Models.Templates.IRepository);
+            var modelAsString = _service.Generate(model, Templates.IRepository);
 
             Console.WriteLine(modelAsString);
             Assert.IsTrue(modelAsString.IsNotEmpty());
@@ -88,7 +88,7 @@ namespace CodeGenerator.Tests
             model.UsingDirectives.Add("Contec.Data.Repositories");
             model.UsingDirectives.Add("Contec.Data.Dapper.Connections");
 
-            var modelAsString = _service.Generate(model, Models.Templates.Repository);
+            var modelAsString = _service.Generate(model, Templates.Repository);
 
             Console.WriteLine(modelAsString);
             Assert.IsTrue(modelAsString.IsNotEmpty());

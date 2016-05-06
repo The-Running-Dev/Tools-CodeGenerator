@@ -1,35 +1,41 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 using MySql.Data.MySqlClient;
 
 using CodeGenerator.Models;
 using CodeGenerator.Extensions;
+using CodeGenerator.SqlDialects;
+using CodeGenerator.Configuration;
 
 namespace CodeGenerator.Providers
 {
-    public class MySqlProvider: IDatabaseProvider
+    public class MySqlProvider : IDatabaseProvider
     {
-        // ToDo: Move database name extraction from connection string
-        public string DatabaseName = "crs_dev";
-
-        // ToDo: Pass the connection string through DI with IConfiguration
-        public string ConnectionString = "";
-
-        public MySqlProvider()
+        public MySqlProvider(IConfiguration configuration, ISqlDialect sqlDialect)
         {
-            
+            _configuration = configuration;
+            _sqlDialect = sqlDialect;
+
+            _connectionString = _configuration.GetConnectionString("DatabaseConnection");
         }
 
-        public List<Table> GetTables()
+        public List<Table> GetTables(List<string> tableNames = null)
         {
             var tables = new List<Table>();
+            var commandSql = _sqlDialect.GetTablesSql;
 
-            using (var connection = new MySqlConnection(ConnectionString))
+            using (var connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
 
+                if (tableNames != null && tableNames.Any())
+                {
+                    commandSql = string.Format(_sqlDialect.GetSpecificTablesSql, tableNames.AsString("'{0}'"));
+                }
+
                 // Create the command to get the tables
-                var command = new MySqlCommand(string.Format(getTablesSql, DatabaseName), connection);
+                var command = new MySqlCommand(commandSql, connection);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -39,7 +45,7 @@ namespace CodeGenerator.Providers
 
                         var model = new Table
                         {
-                            TableName = tableName,
+                            TableName = ((tableNames != null && tableNames.Any())) ? tableNames.FirstOrDefault(item => item.IsEqualTo(tableName)) : tableName,
                             Columns = GetTableColumns(tableName)
                         };
 
@@ -58,11 +64,11 @@ namespace CodeGenerator.Providers
         {
             var columns = new List<Columns>();
 
-            using (var connection = new MySqlConnection(ConnectionString))
+            using (var connection = new MySqlConnection(_connectionString))
             {
                 connection.Open();
 
-                var command = new MySqlCommand(string.Format(getTableColumnsSql, tableName), connection);
+                var command = new MySqlCommand(string.Format(_sqlDialect.GetTableColumnsSql, tableName), connection);
 
                 using (var reader = command.ExecuteReader())
                 {
@@ -71,13 +77,6 @@ namespace CodeGenerator.Providers
                         var columnName = reader.GetValue(0).ToString().ToProperCaseWord();
                         var columnDataType = reader.GetValue(1).ToString();
                         var mappedDataType = columnDataType.ToDataType();
-
-                        // If we can't map it, skip it
-                        //if (string.IsNullOrWhiteSpace(columnDataType))
-                        //{
-                        //    // Skip
-                        //    continue;
-                        //}
 
                         columns.Add(new Columns
                         {
@@ -93,14 +92,8 @@ namespace CodeGenerator.Providers
             return columns;
         }
 
-        private string getTablesSql = @"
-select  table_name
-from    information_schema.tables
-where   table_schema = '{0}'";
-
-        private string getTableColumnsSql = @"
-select  column_name, data_type
-from    information_schema.columns
-where   table_name = '{0}'";
+        private readonly string _connectionString;
+        private readonly IConfiguration _configuration;
+        private readonly ISqlDialect _sqlDialect;
     }
 }
